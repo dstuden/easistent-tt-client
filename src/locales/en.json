@@ -1,0 +1,40 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About"
+  },
+  "home": {
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "flags": {
+      "CANCELED": "Canceled",
+      "REPLACEMENT": "Replacement",
+      "SUBSTITUTE": "Substitute",
+      "NOTDONE": "Not done",
+      "EVENT": "Event",
+      "OFFICEHOURS": "Office hours",
+      "CLUB": "Club",
+      "HALFTIME": "Half-time"
+    },
+    "filterTitles": {
+      "teachers": "Teachers",
+      "classes": "Classes",
+      "rooms": "Rooms",
+      "search": "Search:"
+    },
+    "showFiltersButton": "Show filters"
+  },
+  "about": {
+    "title": "Easistent Timetable",
+    "p1": "This client was created as a replacement for the <span class=\"school\">Easistent timetable</span>, which is <b>kinda bad</b>",
+    "p2": "It was created by <a href=\"https://studen.me\" target=\"_blank\">David Studen</a> and relies on the <a href=\"https://github.com/MaticBabnik/easistent-tt\" target=\"_blank\">API</a> from <a href=\"https://babnik.io\" target=\"_blank\">Matic Babnik</a>.",
+    "p3": "The source code is available on <a href=\"https://github.com/dstuden/easistent-tt-client\" target=\"_blank\">GitHub</a>."
+  }
+}

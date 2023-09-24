@@ -1,0 +1,40 @@
+{
+  "nav": {
+    "home": "Domov",
+    "about": "O projektu"
+  },
+  "home": {
+    "days": {
+      "monday": "ponedeljek",
+      "tuesday": "torek",
+      "wednesday": "sreda",
+      "thursday": "četrtek",
+      "friday": "petek",
+      "saturday": "sobota",
+      "sunday": "nedelja"
+    },
+    "flags": {
+      "CANCELED": "Odpovedano",
+      "REPLACEMENT": "Zamenjava",
+      "SUBSTITUTE": "Nadomeščanje",
+      "NOTDONE": "Neopravljeno",
+      "EVENT": "Dogodek",
+      "OFFICEHOURS": "Govorilna ura",
+      "CLUB": "Krožek",
+      "HALFTIME": "Polovična ura"
+    },
+    "filterTitles": {
+      "teachers": "Profesorji",
+      "classes": "Razredi",
+      "rooms": "Učilnice",
+      "search": "Išči:"
+    },
+    "showFiltersButton": "Pokaži filtre"
+  },
+  "about": {
+    "title": "Easistent Timetable",
+    "p1": "Ta projekt obstaja z namenom, da zamenja Easistentov urnik, ki je <b>kinda bad</b>.",
+    "p2": "Ustvaril ga je <a href=\"https://studen.me\" target=\"_blank\">David Studen</a> in uporablja podatke, ki so na voljo na <a href=\"https://github.com/MaticBabnik/easistent-tt\" target=\"_blank\">APIu</a> od <a href=\"https://babnik.io\" target=\"_blank\">Matica Babnika</a>.",
+    "p3": "Izvirna koda je na voljo na <a href=\"https://github.com/dstuden/easistent-tt-client\" target=\"_blank\">GitHubu</a>."
+  }
+}
