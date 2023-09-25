@@ -225,7 +225,7 @@ const { t } = useI18n()
     <template v-for="(day, day_i) in currentWeek.dates" :key="day">
       <div
         class="period"
-        :class="{ spreadable: isSpreadable(getFilteredEvents[day_i][period]) }"
+        :class="{ spreadable: isSpreadable(getFilteredEvents[day_i][period - 1]) }"
         v-for="period in currentWeek.hourOffsets.length"
         :key="period"
         :style="getPosition(day_i + 2, period + 1)"
@@ -270,13 +270,13 @@ const { t } = useI18n()
         </div>
 
         <div
-          v-if="isSpreadable(getFilteredEvents[day_i][period])"
+          v-if="isSpreadable(getFilteredEvents[day_i][period - 1])"
           class="spread"
           @click="
             emits('openPeriod', {
               date: new Date(day),
-              period,
-              events: getFilteredEvents[day_i][period]
+              period: period - 1,
+              events: getFilteredEvents[day_i][period - 1]
             })
           "
         >

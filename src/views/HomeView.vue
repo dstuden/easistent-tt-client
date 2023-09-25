@@ -57,7 +57,7 @@ const syncFilterData = (data: typeof queryString.value) => {
 }
 
 const changeFilters = (
-  mode: 'replace' | 'add',
+  mode: 'replace' | 'add' | 'remove',
   data: {
     teachers?: string[]
     classes?: string[]
@@ -74,11 +74,24 @@ const changeFilters = (
       rooms: [...(data.rooms ?? [])].join(','),
       globalSearch: data.globalSearch ?? ''
     }
-  else
+  else if (mode === 'add')
     q = {
       teachers: [...(queryString.value.teachers ?? []), ...(data.teachers ?? [])].join(','),
       classes: [...(queryString.value.classes ?? []), ...(data.classes ?? [])].join(','),
       rooms: [...(queryString.value.rooms ?? []), ...(data.rooms ?? [])].join(','),
+      globalSearch: data.globalSearch ?? ''
+    }
+  else
+    q = {
+      teachers: [...(queryString.value.teachers ?? [])]
+        .filter((teacher) => !data.teachers?.includes(teacher))
+        .join(','),
+      classes: [...(queryString.value.classes ?? [])]
+        .filter((class_) => !data.classes?.includes(class_))
+        .join(','),
+      rooms: [...(queryString.value.rooms ?? [])]
+        .filter((room) => !data.rooms?.includes(room))
+        .join(','),
       globalSearch: data.globalSearch ?? ''
     }
 
@@ -222,8 +235,9 @@ const { t } = useI18n()
         v-show="filter !== ''"
         @removeFilter="
           (data) => {
-            if (data.key === 'globalSearch') filterData.globalSearch[0] = ''
-            else filterData[data.key].delete(data.value)
+            changeFilters('remove', {
+              [data.key]: [data.value]
+            })
           }
         "
       ></INeedMoreBulletsComponent>
