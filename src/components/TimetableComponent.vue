@@ -232,7 +232,7 @@ const { t } = useI18n()
       >
         <div
           class="event"
-          v-for="(event, event_i) in getFilteredEvents[day_i][period]"
+          v-for="(event, event_i) in getFilteredEvents[day_i][period - 1]"
           :key="event_i"
         >
           <span class="title" :style="{ color: getColor(event.title.short) }">{{
@@ -295,14 +295,14 @@ const { t } = useI18n()
   @apply grid rounded-md shadow-lg overflow-auto shadow-2xl bg-gray-100 h-full dark:bg-gray-700 dark:text-gray-200;
 
   .day {
-    @apply flex xl:flex-row flex-col justify-between xl:items-end sticky top-0 px-4 py-2 pt-3 bg-gray-50 border-r border-gray-200 shadow-sm block dark:bg-gray-700 dark:border-gray-500;
+    @apply flex xl:flex-row flex-col justify-between xl:items-end sticky top-0 px-2 py-1 pt-1 sm:px-4 sm:py-2 sm:pt-3 bg-gray-50 border-r border-gray-200 shadow-sm block dark:bg-gray-700 dark:border-gray-500;
 
     &.last {
       @apply mr-1 border-r-0;
     }
 
     .weekday {
-      @apply text-gray-700 text-base dark:text-gray-200;
+      @apply text-gray-700 text-sm sm:text-base dark:text-gray-200;
     }
 
     .date {
@@ -311,7 +311,7 @@ const { t } = useI18n()
   }
 
   .periodH {
-    @apply text-gray-400 text-base w-16 flex flex-col items-center text-center justify-between py-4 sticky left-0 bg-gray-50 border-b dark:bg-gray-700 dark:border-gray-500;
+    @apply text-gray-400 text-sm sm:text-base w-12 sm:w-16 flex flex-col items-center text-center justify-between py-2 sm:py-4 sticky left-0 bg-gray-50 border-b dark:bg-gray-700 dark:border-gray-500;
   }
 
   .period {
@@ -331,7 +331,7 @@ const { t } = useI18n()
     }
 
     .event {
-      @apply rounded-md shadow-md p-4 bg-white hover:bg-gray-100 transition-colors duration-100 ease-in-out 2xl:w-full dark:bg-gray-700 dark:hover:bg-gray-600;
+      @apply rounded-md shadow-md p-2 sm:p-4 bg-white hover:bg-gray-100 transition-colors duration-100 ease-in-out 2xl:w-full dark:bg-gray-700 dark:hover:bg-gray-600;
 
       .title {
         @apply font-bold text-blue-500;

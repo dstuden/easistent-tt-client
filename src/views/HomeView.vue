@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useDataStore, type Event as PeriodEvent } from '@/stores/data'
 import { useI18n } from 'vue-i18n'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import type { FilterData } from '@/components/TimetableComponent.vue'
 import TimetableComponent from '@/components/TimetableComponent.vue'
 import FilterInputComponent from '@/components/FilterInputComponent.vue'
@@ -11,6 +11,10 @@ import ChevronUp from '@/icons/ChevronUpIcon.vue'
 import { useCommonStore } from '@/stores/common'
 import INeedMoreBulletsComponent from '@/components/INeedMoreBulletsComponent.vue'
 import PeriodModalComponent from '@/components/PeriodModalComponent.vue'
+import { useRoute, useRouter } from 'vue-router'
+
+const route = useRoute()
+const router = useRouter()
 
 const commonStore = useCommonStore()
 const screenData = storeToRefs(commonStore).screenData
@@ -28,6 +32,70 @@ const filterData = ref<FilterData>({
 })
 
 const hideFilters = ref(screenData.value.width < 900)
+
+const queryString = computed(() => {
+  return {
+    teachers: route.query.teachers?.toString().split(','),
+    classes: route.query.classes?.toString().split(','),
+    rooms: route.query.rooms?.toString().split(','),
+    globalSearch: route.query.globalSearch?.toString()
+  }
+})
+
+const syncFilterData = (data: typeof queryString.value) => {
+  filterData.value.teachers = new Set(
+    data.teachers?.filter((teacher) => dataStore.teachers.get(teacher))
+  )
+
+  filterData.value.classes = new Set(
+    data.classes?.filter((class_) => dataStore.classes.get(class_))
+  )
+
+  filterData.value.rooms = new Set(data.rooms?.filter((room) => dataStore.rooms.get(room)))
+
+  filterData.value.globalSearch[0] = data.globalSearch ?? ''
+}
+
+const changeFilters = (
+  mode: 'replace' | 'add',
+  data: {
+    teachers?: string[]
+    classes?: string[]
+    rooms?: string[]
+    globalSearch?: string
+  }
+) => {
+  let q
+
+  if (mode === 'replace')
+    q = {
+      teachers: [...(data.teachers ?? [])].join(','),
+      classes: [...(data.classes ?? [])].join(','),
+      rooms: [...(data.rooms ?? [])].join(','),
+      globalSearch: data.globalSearch ?? ''
+    }
+  else
+    q = {
+      teachers: [...(queryString.value.teachers ?? []), ...(data.teachers ?? [])].join(','),
+      classes: [...(queryString.value.classes ?? []), ...(data.classes ?? [])].join(','),
+      rooms: [...(queryString.value.rooms ?? []), ...(data.rooms ?? [])].join(','),
+      globalSearch: data.globalSearch ?? ''
+    }
+
+  const query = Object.fromEntries(Object.entries(q).filter(([_, value]) => value !== ''))
+
+  router.push({
+    query
+  })
+}
+
+onMounted(() => {
+  syncFilterData(queryString.value)
+
+  watch(queryString, (data) => {
+    syncFilterData(data)
+  })
+})
 
 const teacherDropdownData = computed(() => {
   return getSortedTeachers.value.map((teacher) => ({
@@ -50,37 +118,19 @@ const classesDropdownData = computed(() => {
   }))
 })
 
-const updateTeachers = (data: {
+const updateOnFilterEvent = (data: {
+  key: keyof typeof filterData.value
   value: {
     display: string
     value: string
   }
   mode: 'replace' | 'add'
 }) => {
-  if (data.mode === 'replace') filterData.value.teachers = new Set([data.value.value])
-  else filterData.value.teachers.add(data.value.value)
-}
+  if (data.key === 'globalSearch') return
 
-const updateRooms = (data: {
-  value: {
-    display: string
-    value: string
-  }
-  mode: 'replace' | 'add'
-}) => {
-  if (data.mode === 'replace') filterData.value.rooms = new Set([data.value.value])
-  else filterData.value.rooms.add(data.value.value)
-}
-
-const updateClasses = (data: {
-  value: {
-    display: string
-    value: string
-  }
-  mode: 'replace' | 'add'
-}) => {
-  if (data.mode === 'replace') filterData.value.classes = new Set([data.value.value])
-  else filterData.value.classes.add(data.value.value)
+  changeFilters(data.mode, {
+    [data.key]: [data.value.value]
+  })
 }
 
 const timer = ref()
@@ -90,16 +140,19 @@ const updateGlobalSearch = (e: Event) => {
   timer.value = setTimeout(() => {
     const data = (e.target as HTMLInputElement).value
 
-    filterData.value.globalSearch[0] = data
-    console.log(filterData.value.globalSearch)
+    changeFilters('add', {
+      globalSearch: data
+    })
   }, 500)
 }
 
 const clearFilters = () => {
-  filterData.value.classes.clear()
-  filterData.value.teachers.clear()
-  filterData.value.rooms.clear()
-  filterData.value.globalSearch[0] = ''
+  changeFilters('replace', {
+    teachers: [],
+    classes: [],
+    rooms: [],
+    globalSearch: ''
+  })
 }
 
 const periodModalData = ref<{
@@ -129,21 +182,21 @@ const { t } = useI18n()
       type="dropdown"
       :title="t('home.filterTitles.teachers')"
       :dropdownData="teacherDropdownData"
-      @dropdownChange="updateTeachers"
+      @dropdownChange="(d) => updateOnFilterEvent({ ...d, key: 'teachers' })"
       :reset="filterData.teachers.size === 0"
     ></FilterInputComponent>
     <FilterInputComponent
       type="dropdown"
       :title="t('home.filterTitles.rooms')"
       :dropdownData="roomDropdownData"
-      @dropdownChange="updateRooms"
+      @dropdownChange="(d) => updateOnFilterEvent({ ...d, key: 'rooms' })"
       :reset="filterData.rooms.size === 0"
     ></FilterInputComponent>
     <FilterInputComponent
       type="dropdown"
       :title="t('home.filterTitles.classes')"
       :dropdownData="classesDropdownData"
-      @dropdownChange="updateClasses"
+      @dropdownChange="(d) => updateOnFilterEvent({ ...d, key: 'classes' })"
       :reset="filterData.classes.size === 0"
     ></FilterInputComponent>
     <FilterInputComponent
@@ -181,13 +234,9 @@ const { t } = useI18n()
     :filterData="filterData"
     @changeFilter="
       (data) => {
-        filterData.classes.clear()
-        filterData.teachers.clear()
-        filterData.rooms.clear()
-        filterData.globalSearch[0] = ''
-
-        // @ts-ignore this will never return a globalSearch string
-        filterData[data.key] = new Set(data.value)
+        changeFilters('replace', {
+          [data.key]: [...data.value]
+        })
       }
     "
     @openPeriod="

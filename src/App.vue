@@ -130,7 +130,7 @@ header {
 }
 
 main {
-  @apply flex flex-col items-center px-4 lg:px-28 py-4 gap-y-4;
+  @apply flex flex-col items-center px-4 lg:px-28 py-4 gap-y-1 sm:gap-y-4;
   height: calc(100% - 3rem);
 }
 </style>

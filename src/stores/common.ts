@@ -43,8 +43,6 @@ export const useCommonStore = defineStore('common', () => {
 
     color.value = newColor
 
-    console.log(color.value)
-
     if (color.value === 'auto') {
       if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
         document.documentElement.setAttribute('class', 'dark')
