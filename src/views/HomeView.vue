@@ -92,7 +92,10 @@ const changeFilters = (
       rooms: [...(queryString.value.rooms ?? [])]
         .filter((room) => !data.rooms?.includes(room))
         .join(','),
-      globalSearch: data.globalSearch ?? ''
+      globalSearch:
+        data.globalSearch?.length === 0
+          ? ''
+          : queryString.value.globalSearch?.replace(data.globalSearch ?? '', '')
     }
 
   const query = Object.fromEntries(Object.entries(q).filter(([_, value]) => value !== ''))
